@@ -1,7 +1,10 @@
-<div class="translator-container row">
-    <div class="col-md-6">
-        <form #translator="ngForm" (ngSubmit)="send()">
-            <textarea name="src_text" placeholder="Text to translate" minlength="5" rows="10"
+<div class="translator-container">
+    <form #translator="ngForm" (ngSubmit)="send()" class="row">
+        <div class="col-md-6">
+            <select name="src_lang" class="form-control" [(ngModel)]="defaultSrcLang">
+                <option *ngFor="let l of langs" [value]="l.language">{{l.name}}</option>
+            </select>
+            <textarea class="form-control" name="src_text" placeholder="Text to translate" minlength="5" rows="10"
                 required [(ngModel)]="googleObj.q"></textarea>
             <div>
                 <button type="button" color="accent"
@@ -9,10 +12,13 @@
                 <button type="submit" id="btnSubmit" color="primary"
                     [disabled]="!translator.valid">Translate</button>
             </div>
-        </form>
-    </div>
-    <div class="col-md-6">
-        <label for="english" class="font-weight-bold">Result:</label>
-        <p>{{result}}</p>
-    </div> 
+        </div>
+        <div class="col-md-6">
+            <select name="trg_lang" class="form-control" [(ngModel)]="defaultTrgLang">
+                <option *ngFor="let l of langs" [value]="l.language">{{l.name}}</option>
+            </select>
+            <label class="font-weight-bold">Result:</label>
+            <p>{{result}}</p>
+        </div>
+    </form>
 </div>
