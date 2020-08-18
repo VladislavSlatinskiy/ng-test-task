@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {GoogleTranslateService, Lang, GoogleLangResp} from './services/googletranslate.service';
-import { Observable } from 'rxjs';
+import {GoogleTranslateService, TranslateObj, Lang} from './services/googletranslate.service';
 
 @Component({
     selector: 'app-root',
@@ -9,28 +8,43 @@ import { Observable } from 'rxjs';
     providers: [GoogleTranslateService]
 })
 export class AppComponent implements OnInit {
-    title = 'ng-test';
-    public langs: Lang[];
+    public languagesList: Lang[];
+    public translateObjectList: TranslateObj[];
+    public currentTranslateObject: TranslateObj;
+    public isShowTranslator = false;
 
-    // tslint:disable-next-line:variable-name
-    constructor(private _google: GoogleTranslateService) {}
+    constructor(private googleService: GoogleTranslateService) {}
 
-    private getLangs() {
-        this._google.getSupportedLanguages().subscribe((lang: GoogleLangResp) => {
-            this.langs = lang.data.languages;
-            localStorage.setItem('langs', JSON.stringify(this.langs));
-        });
+    private setLanguages(): void {
+        this.googleService.getSupportedLanguages().subscribe(
+            (lang: any) => {
+                this.languagesList = lang.data.languages;
+                localStorage.setItem('languages', JSON.stringify(this.languagesList));
+            },
+            err => {
+                console.log(err);
+            });
+    }
+
+    public openTranslator(): void {
+        this.isShowTranslator = !this.isShowTranslator;
+        this.currentTranslateObject = this.translateObjectList[this.translateObjectList.length - 1];
+        this.currentTranslateObject.q = '';
+        this.currentTranslateObject.result = '';
     }
 
     ngOnInit(): void {
-        const langstr = localStorage.getItem('testObject');
-        if (langstr === undefined || langstr === null || langstr === '')
-        {
-            this.getLangs();
+        const languagesString = localStorage.getItem('languages');
+        const historyString = localStorage.getItem('history');
+        if (languagesString === undefined || languagesString === null || languagesString === '') {
+            this.setLanguages();
+        } else {
+            this.languagesList = JSON.parse(languagesString);
         }
-        else
-        {
-            this.langs = JSON.parse(langstr);
+        if (historyString === undefined || historyString === null || historyString === '') {
+            this.translateObjectList = [new TranslateObj('en', 'ru')];
+        } else {
+            this.translateObjectList = JSON.parse(historyString);
         }
     }
 

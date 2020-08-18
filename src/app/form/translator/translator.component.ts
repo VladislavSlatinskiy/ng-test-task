@@ -1,5 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
-import {GoogleTranslateService, GoogleObj, Lang} from '../../services/googletranslate.service';
+import {GoogleTranslateService, TranslateObj, Lang} from '../../services/googletranslate.service';
 
 @Component({
     selector: 'app-translator',
@@ -8,33 +8,40 @@ import {GoogleTranslateService, GoogleObj, Lang} from '../../services/googletran
     providers: [GoogleTranslateService]
 })
 export class TranslatorComponent implements OnInit {
-    public googleObj: GoogleObj = new GoogleObj();
     public result = '';
     private translateButton: any;
-    defaultSrcLang = 'en';
-    defaultTrgLang = 'ru';
-    @Input() langs: Lang[];
+    @Input() languagesList: Lang[];
+    @Input() translateObject: TranslateObj;
 
-    constructor(private _google: GoogleTranslateService) {
-    }
 
-    ngOnInit() {
+    constructor(private googleService: GoogleTranslateService) {}
+
+    ngOnInit(): void {
         this.translateButton = document.getElementById('btnSubmit');
-        this.googleObj.format = 'text';
-        this.googleObj.source = 'en';
-        this.googleObj.target = 'ru';
     }
 
-    send() {
+    send(): void{
         this.translateButton.disabled = true;
-        this._google.translate(this.googleObj).subscribe(
+        this.googleService.translate(this.translateObject).subscribe(
             (res: any) => {
                 this.translateButton.disabled = false;
-                this.result = res.data.translations[0].translatedText;
+                this.translateObject.result = res.data.translations[0].translatedText;
+                this.saveToHistory();
             },
             err => {
                 console.log(err);
             }
         );
+    }
+
+    private saveToHistory(): void
+    {
+        let translateObjectList: TranslateObj[] = [];
+        const historyString = localStorage.getItem('history');
+        if (historyString !== undefined && historyString !== null && historyString !== '') {
+            translateObjectList = JSON.parse(historyString);
+        }
+        translateObjectList.push(this.translateObject);
+        localStorage.setItem('history', JSON.stringify(translateObjectList));
     }
 }
