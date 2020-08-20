@@ -5,12 +5,11 @@
                 <option *ngFor="let l of languagesList" [value]="l.language">{{l.name}}</option>
             </select>
             <textarea class="form-control" name="src_text" placeholder="Text to translate" minlength="5" rows="10"
-                required [(ngModel)]="translateObject.q"></textarea>
+                      required [(ngModel)]="translateObject.q"></textarea>
             <div>
-                <button type="button" color="accent"
-                    (click)="translateObject.q = ''; result = ''">Erase</button>
-                <button type="submit" id="btnSubmit" color="primary"
-                    [disabled]="!translator.valid">Translate</button>
+                <button class="btn btn-success w-100" type="submit" id="btnSubmit"
+                        [disabled]="translateObject.q.length == 0">Translate
+                </button>
             </div>
         </div>
         <div class="col-md-6">
@@ -19,6 +18,12 @@
             </select>
             <textarea readonly class="form-control" placeholder="Result" minlength="5" rows="10"
                       [ngModel]="translateObject.result" [ngModelOptions]="{standalone: true}"></textarea>
+            <div>
+                <button class="btn btn-danger w-100" type="button"
+                        [disabled]="translateObject.q.length == 0"
+                        (click)="translateObject.q = ''; translateObject.result = ''">Clear
+                </button>
+            </div>
         </div>
     </form>
 </div>

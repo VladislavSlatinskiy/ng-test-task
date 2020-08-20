@@ -5,11 +5,13 @@ import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 import { TranslatorComponent } from './form/translator/translator.component';
+import { HistoryItemComponent } from './history-item/history-item.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    TranslatorComponent
+    TranslatorComponent,
+    HistoryItemComponent
   ],
   imports: [
     BrowserModule, 

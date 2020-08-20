@@ -16,36 +16,45 @@ export class AppComponent implements OnInit {
     constructor(private googleService: GoogleTranslateService) {}
 
     private setLanguages(): void {
-        this.googleService.getSupportedLanguages().subscribe(
-            (lang: any) => {
-                this.languagesList = lang.data.languages;
-                localStorage.setItem('languages', JSON.stringify(this.languagesList));
-            },
-            err => {
-                console.log(err);
-            });
+        const languagesString = localStorage.getItem('languages');
+
+        if (languagesString === undefined || languagesString === null || languagesString === '') {
+            this.googleService.getSupportedLanguages().subscribe(
+                (lang: any) => {
+                    this.languagesList = lang.data.languages;
+                    localStorage.setItem('languages', JSON.stringify(this.languagesList));
+                },
+                err => {
+                    console.log(err);
+                });
+        } else {
+            this.languagesList = JSON.parse(languagesString);
+        }
+    }
+
+    private setHistoryList(): void {
+        const historyString = localStorage.getItem('history');
+        if (historyString === undefined || historyString === null || historyString === '') {
+            this.translateObjectList = [];
+        } else {
+            this.translateObjectList = JSON.parse(historyString).reverse();
+        }
     }
 
     public openTranslator(): void {
         this.isShowTranslator = !this.isShowTranslator;
-        this.currentTranslateObject = this.translateObjectList[this.translateObjectList.length - 1];
-        this.currentTranslateObject.q = '';
-        this.currentTranslateObject.result = '';
+        if (this.isShowTranslator) {
+            this.currentTranslateObject = this.translateObjectList.length > 0 ? this.translateObjectList[0] : new TranslateObj('en', 'ru');
+            this.currentTranslateObject.q = '';
+            this.currentTranslateObject.result = '';
+        } else {
+            this.setHistoryList();
+        }
     }
 
     ngOnInit(): void {
-        const languagesString = localStorage.getItem('languages');
-        const historyString = localStorage.getItem('history');
-        if (languagesString === undefined || languagesString === null || languagesString === '') {
-            this.setLanguages();
-        } else {
-            this.languagesList = JSON.parse(languagesString);
-        }
-        if (historyString === undefined || historyString === null || historyString === '') {
-            this.translateObjectList = [new TranslateObj('en', 'ru')];
-        } else {
-            this.translateObjectList = JSON.parse(historyString);
-        }
+        this.setLanguages();
+        this.setHistoryList();
     }
 
 }

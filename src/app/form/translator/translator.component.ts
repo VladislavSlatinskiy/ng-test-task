@@ -8,11 +8,9 @@ import {GoogleTranslateService, TranslateObj, Lang} from '../../services/googlet
     providers: [GoogleTranslateService]
 })
 export class TranslatorComponent implements OnInit {
-    public result = '';
     private translateButton: any;
     @Input() languagesList: Lang[];
     @Input() translateObject: TranslateObj;
-
 
     constructor(private googleService: GoogleTranslateService) {}
 
