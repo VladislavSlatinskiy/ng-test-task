@@ -41,12 +41,16 @@ export class AppComponent implements OnInit {
         }
     }
 
-    public openTranslator(): void {
+    public openTranslator(translateObject: TranslateObj = null): void {
         this.isShowTranslator = !this.isShowTranslator;
         if (this.isShowTranslator) {
-            this.currentTranslateObject = this.translateObjectList.length > 0 ? this.translateObjectList[0] : new TranslateObj('en', 'ru');
-            this.currentTranslateObject.q = '';
-            this.currentTranslateObject.result = '';
+            if(translateObject !== null) {
+                this.currentTranslateObject = translateObject;
+            } else {
+                this.currentTranslateObject = this.translateObjectList.length > 0 ? this.translateObjectList[0] : new TranslateObj('en', 'ru');
+                this.currentTranslateObject.q = '';
+                this.currentTranslateObject.result = '';
+            }
         } else {
             this.setHistoryList();
         }

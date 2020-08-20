@@ -13,6 +13,7 @@
         <app-translator [languagesList]="languagesList" [translateObject]="currentTranslateObject"></app-translator>
     </ng-template>
     <ng-template #elseBlock>
-        <app-history-item *ngFor="let obj of translateObjectList" [translateObject]="obj"></app-history-item>
+        <app-history-item *ngFor="let obj of translateObjectList" [translateObject]="obj"
+            (click)="openTranslator(obj)"></app-history-item>
     </ng-template>
 </div>
